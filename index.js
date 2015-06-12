@@ -27,29 +27,41 @@ function store_all_chapters_content(){
 	}
 }
 
-function findNerves(chapter){
-	// var nerves_array
-	// console.log(str.match('/nerves/g').length);
-	return chapter.match(/nerves/g).length
+function findNerves(chapter, regularExpression){
+	// var regularExpression = /nerves/g;
+	// return chapter.match(/nerves/g).length;
+	return chapter.match(regularExpression).length;
 }
+//search for nerves
+// db.search('pride_and_prejudice', 'value.contents: "nerves*"')
+// .then(function(result){
+// 	var chapterText;
+// 	var nerveOccurs = {};
+// 	var chapterArray = result.body.results; 
+// 	for(chapterCount = 0;chapterCount<chapterArray.length;chapterCount++){
+// 		chapterText = chapterArray[chapterCount].value.contents;
+// 		var chapterNumber = chapterArray[chapterCount].value.chapter_number;
+// 		var count = findNerves(chapterText, /nerves/g);
+// 		nerveOccurs[chapterNumber]= count;
+// 	}
+// 	console.log(nerveOccurs);
+// }).fail(function(err){console.log('error');})
 
-db.search('pride_and_prejudice', 'value.contents: "nerves*"')
+
+//finds Mary where Lydia doesn't exist
+db.search('pride_and_prejudice', 'value.contents: "Mary" AND NOT "Lydia"')
 .then(function(result){
+	// console.log(res.body);
 	var chapterText;
 	var nerveOccurs = {};
 	var chapterArray = result.body.results; 
 	for(chapterCount = 0;chapterCount<chapterArray.length;chapterCount++){
 		chapterText = chapterArray[chapterCount].value.contents;
 		var chapterNumber = chapterArray[chapterCount].value.chapter_number;
-		var count = findNerves(chapterText);
+		var count = findNerves(chapterText, /Mary/g);
 		nerveOccurs[chapterNumber]= count;
 	}
 	console.log(nerveOccurs);
 }).fail(function(err){console.log('error');})
-
-
-
-
-// db.search('pride_and_prejudice', 'value.contents: "Mary" NOT "Lydia"')
 
 
