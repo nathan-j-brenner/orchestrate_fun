@@ -1,33 +1,26 @@
 var config = require('./config.js');
 var db = require('orchestrate')(config.dbKey)
+var fs = require('fs');
 
-
-// db.put('test', 'nate', {
-// 	"home_location": "Troutdale",
-// 	"work_location": "Portland",
-// 	"residing_state": "Oregon"
-// })
-// .then(function(res){
-// 	console.log(res.statusCode);
-// })
-// .fail(function(err){});
-
-// db.get('test', 'nate')
-// .then(function(res){
-// 	console.log(res.body);
-// })
-// .fail(function(err){});
-
-db.get('test', 'home_location').then(function(result){console.log(result);}).fail(function(err){console.log(err);})
-
-// db.search('test', 'value.work_location: "Portland"')
-// .then(function(res){
-// 	console.log(res.body);
-// })
-// .fail(function(err){})
-
-// db.list('test', {limit:10, startKey:'n'}).then(function(result){
-// 	console.log(result);
-// }).fail(function(err){console.log(err);});
-
-// db.ping().then(function(){console.log("working");}).fail(function(err){console.log(err);})
+//read each file and store the contents of each file in a collection
+var store_content_in_orchestrate_collection = function(i){
+		fs.readFile('../pride-and-prejudice/chapter-' + i, {encoding: 'utf8'}, function(err, data){
+			if(err) throw err;
+			db.put('pride_and_prejudice', 'chapter-'+i, {
+				'chapter_number': i,
+				'contents': data
+			})
+			.then(function(result){})
+			.fail(function(err){})
+		});
+	return store_content_in_orchestrate_collection;
+}
+// store_content_in_orchestrate_collection();
+var chapterName;
+for(var i = 1; i<10;i++){
+	var j = '0'+ i;
+	store_content_in_orchestrate_collection(j)
+}
+for(var i = 10; i<=61; i++){
+	store_content_in_orchestrate_collection(i);
+}
